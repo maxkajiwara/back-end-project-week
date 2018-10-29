@@ -17,7 +17,11 @@ function getNotes(id) {
 	}
 }
 
-function addNote(note) {}
+function addNote(note) {
+	return db('notes')
+		.insert(note)
+		.then(([id]) => id);
+}
 
 function updateNote(note) {}
 
