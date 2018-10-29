@@ -29,4 +29,8 @@ function updateNote(id, changes) {
 		.update(changes);
 }
 
-function deleteNote(id) {}
+function deleteNote(id) {
+	return db('notes')
+		.where({ id })
+		.del();
+}
