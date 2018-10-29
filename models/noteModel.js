@@ -7,7 +7,15 @@ module.exports = {
 	deleteNote
 };
 
-function getNotes(id) {}
+function getNotes(id) {
+	let query = db('notes');
+
+	if (id) {
+		return query.where({ id }).then(([note]) => note || undefined);
+	} else {
+		return query;
+	}
+}
 
 function addNote(note) {}
 
