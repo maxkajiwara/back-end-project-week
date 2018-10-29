@@ -7,10 +7,10 @@ module.exports = {
 	deleteNote
 };
 
-function getNotes(user) {}
+function getNotes(id) {}
 
-function addNote(credentials) {}
+function addNote(note) {}
 
-function updateNote(credentials) {}
+function updateNote(note) {}
 
-function deleteNote(credentials) {}
+function deleteNote(id) {}
