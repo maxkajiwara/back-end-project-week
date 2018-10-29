@@ -23,6 +23,10 @@ function addNote(note) {
 		.then(([id]) => id);
 }
 
-function updateNote(note) {}
+function updateNote(id, changes) {
+	return db('notes')
+		.where({ id })
+		.update(changes);
+}
 
 function deleteNote(id) {}
