@@ -42,6 +42,21 @@ router.post('/', (req, res) => {
 });
 
 // update note
+router.put('/:id', (req, res) => {
+	const { title, textBody } = req.body;
+	const changes = { title, textBody };
+
+	noteModel
+		.updateNote(id, changes)
+		.then(count => {
+			if (count) {
+				res.status(200).json({ message: `note updated` });
+			} else {
+				res.status(404).json({ error: 'no note by that id' });
+			}
+		})
+		.catch(err => res.status(500).json(err));
+});
 
 // delete note
 
