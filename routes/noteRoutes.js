@@ -16,6 +16,20 @@ router.get('/', (req, res) => {
 });
 
 // get note by id
+router.get('/:id', (req, res) => {
+	const { id } = req.params;
+
+	noteModel
+		.getNotes(id)
+		.then(note => {
+			if (note) {
+				res.status(201).json(note);
+			} else {
+				res.status(404).json({ error: 'no note by that id' });
+			}
+		})
+		.catch(err => res.status(500).json(err));
+});
 
 // add note
 
