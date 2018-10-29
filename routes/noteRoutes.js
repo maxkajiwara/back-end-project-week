@@ -33,33 +33,49 @@ router.get('/:id', (req, res) => {
 
 // add note
 router.post('/', (req, res) => {
-	noteModel
-		.addNote(note)
-		.then(id => {
-			res.status(200).json({ message: `note added with id ${id}` });
-		})
-		.catch(err => res.status(500).json(err));
+	const { title, textBody } = req.body;
+
+	if (!title || !textBody) {
+		res.status(422).json({ error: 'must provide title and textBody' });
+	} else {
+		const note = { title, textBody };
+
+		noteModel
+			.addNote(note)
+			.then(id => {
+				res.status(200).json({ message: `note added with id ${id}` });
+			})
+			.catch(err => res.status(500).json(err));
+	}
 });
 
 // update note
 router.put('/:id', (req, res) => {
 	const { title, textBody } = req.body;
-	const changes = { title, textBody };
 
-	noteModel
-		.updateNote(id, changes)
-		.then(count => {
-			if (count) {
-				res.status(200).json({ message: `note updated` });
-			} else {
-				res.status(404).json({ error: 'no note by that id' });
-			}
-		})
-		.catch(err => res.status(500).json(err));
+	if (!title || !textBody) {
+		res.status(422).json({ error: 'must provide title and textBody' });
+	} else {
+		const { id } = req.params;
+		const changes = { title, textBody };
+
+		noteModel
+			.updateNote(id, changes)
+			.then(count => {
+				if (count) {
+					res.status(200).json({ message: `note updated` });
+				} else {
+					res.status(404).json({ error: 'no note by that id' });
+				}
+			})
+			.catch(err => res.status(500).json(err));
+	}
 });
 
 // delete note
 router.delete('/:id', (req, res) => {
+	const { id } = req.params;
+
 	noteModel
 		.deleteNote(id)
 		.then(count => {
