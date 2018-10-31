@@ -10,6 +10,7 @@ exports.up = function(knex, Promise) {
 			.unsigned()
 			.references('tags.id')
 			.onDelete('CASCADE');
+		table.unique(['note_id', 'tag_id']);
 	});
 };
 
