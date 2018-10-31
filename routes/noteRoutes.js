@@ -88,4 +88,37 @@ router.delete('/:id', (req, res) => {
 		.catch(err => res.status(500).json(err));
 });
 
+// add tag to note by id
+router.post('/:note_id/tags', (req, res) => {
+	const { note_id } = req.params;
+	const { tag_id } = req.body;
+
+	if (!tag_id) {
+		res.status(422).json({ error: 'must provide tag id' });
+	} else {
+		noteModel
+			.addNoteTag(note_id, tag_id)
+			.then(({ index, notFound }) => {
+				if (notFound) {
+					res.status(404).json({ error: `no ${notFound} by that id` });
+				} else {
+					if (index) {
+						res.status(200).json({ message: 'tag added to note' });
+					} else {
+						res
+							.status(500)
+							.json({ error: 'something went wrong in the database' });
+					}
+				}
+			})
+			.catch(err => {
+				if (err.code === 'SQLITE_CONSTRAINT') {
+					res.status(409).json({ error: 'note already has this tag' });
+				} else {
+					res.status(500).json(err);
+				}
+			});
+	}
+});
+
 module.exports = router;
