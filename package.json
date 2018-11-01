@@ -6,7 +6,7 @@
 	"author": "Max <maxkajiwara@gmail.com>",
 	"license": "MIT",
 	"scripts": {
-		"start": "index.js",
+		"start": "node index.js",
 		"test": "jest --watch --verbose"
 	},
 	"jest": {
