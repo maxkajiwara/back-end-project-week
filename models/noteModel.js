@@ -6,51 +6,9 @@ module.exports = {
 	addNote,
 	updateNote,
 	deleteNote,
-	addNoteTag
+	addNoteTag,
+	removeNoteTag
 };
-
-// Without tags
-// function getNotes(id) {
-// 	let query = db('notes');
-
-// 	if (id) {
-// 		return query.where({ id }).then(([note]) => note || undefined);
-// 	} else {
-// 		return query;
-// 	}
-// }
-
-// This returns a note row for every tag.
-// function getNotes() {
-// 	return db
-// 		.select(
-// 			'note_tags.note_id',
-// 			'notes.title',
-// 			'notes.textBody',
-// 			'note_tags.tag_id',
-// 			'tags.text'
-// 		)
-// 		.from('notes')
-// 		.innerJoin('note_tags', 'notes.id', 'note_tags.note_id')
-// 		.innerJoin('tags', 'note_tags.tag_id', 'tags.id');
-// }
-
-// This works! Can compare performance of .filter().map() to .reduce().
-// function getNotes() {
-// 	return db('notes').then(notes => {
-// 		return db('tags')
-// 			.join('note_tags', 'tags.id', 'note_tags.tag_id')
-// 			.select('note_tags.note_id', 'tags.id', 'tags.text')
-// 			.then(tags => {
-// 				return notes.map(note => {
-// 					noteTags = tags
-// 						.filter(({ note_id }) => note_id === note.id)
-// 						.map(({ note_id, ...tag }) => tag);
-// 					return { ...note, tags: noteTags };
-// 				});
-// 			});
-// 	});
-// }
 
 function getNotes() {
 	return db('notes').then(notes => {
@@ -137,48 +95,8 @@ function addNoteTag(note_id, tag_id) {
 		});
 }
 
-// This tried too do too many things at once
-// function addTag(note_id, text) {
-// 	console.log(
-// 		db('notes')
-// 			.where({ id: note_id })
-// 			.first()
-// 			.then(logMe => console.log(logMe))
-// 	);
-
-// 	return db('notes')
-// 		.where({ id: note_id })
-// 		.then(([{ id: found }]) => {
-// 			console.log(found);
-// 			if (found) {
-// 				return db('tags')
-// 					.where({ text })
-// 					.then(([{ id }]) => {
-// 						console.log(id);
-// 						if (id) {
-// 							return db('note_tags')
-// 								.where({ note_id, tag_id: id })
-// 								.then(([found]) => {
-// 									if (found) {
-// 										res.status(405).json({ error: 'duplicate tag' });
-// 									} else {
-// 										return db('note_tags')
-// 											.insert({ note_id, tag_id: id })
-// 											.then(([id]) => id);
-// 									}
-// 								});
-// 						} else {
-// 							return db('tags')
-// 								.insert({ text })
-// 								.then(([tag_id]) => {
-// 									return db('note_tags')
-// 										.insert({ note_id, tag_id })
-// 										.then(() => tag_id);
-// 								});
-// 						}
-// 					});
-// 			} else {
-// 				return undefined;
-// 			}
-// 		});
-// }
+function removeNoteTag(note_id, tag_id) {
+	return db('note_tags')
+		.where({ note_id, tag_id })
+		.del();
+}

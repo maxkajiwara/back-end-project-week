@@ -80,7 +80,7 @@ router.delete('/:id', (req, res) => {
 		.deleteNote(id)
 		.then(count => {
 			if (count) {
-				res.status(200).json({ message: `note deleted` });
+				res.status(200).json({ message: 'note deleted' });
 			} else {
 				res.status(404).json({ error: 'no note by that id' });
 			}
@@ -119,6 +119,22 @@ router.post('/:note_id/tags', (req, res) => {
 				}
 			});
 	}
+});
+
+// remove tag from note by id
+router.delete('/:note_id/tags/:tag_id', (req, res) => {
+	const { note_id, tag_id } = req.params;
+
+	noteModel
+		.removeNoteTag(note_id, tag_id)
+		.then(count => {
+			if (count) {
+				res.status(200).json({ message: 'tag removed from note' });
+			} else {
+				res.status(404).json({ error: 'note+tag combination does not exist' });
+			}
+		})
+		.catch(err => res.status(500).json(err));
 });
 
 module.exports = router;
