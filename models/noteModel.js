@@ -59,7 +59,7 @@ function getNotes() {
 			.select('note_tags.note_id', 'tags.id', 'tags.text')
 			.then(tags => {
 				return notes.map(note => {
-					noteTags = tags.reduce(
+					const noteTags = tags.reduce(
 						(arr, { note_id, ...tag }) =>
 							note_id === note.id ? [...arr, tag] : arr,
 						[]
@@ -81,12 +81,12 @@ function getNote(id) {
 					.select('note_tags.note_id', 'tags.id', 'tags.text')
 					.where({ note_id: id })
 					.then(tags => {
-						return notes.map(note => {
-							const noteTags = tags
-								.filter(({ note_id }) => note_id === note.id)
-								.map(({ note_id, ...tag }) => tag);
-							return { ...note, tags: noteTags };
-						});
+						const noteTags = tags.reduce(
+							(arr, { note_id, ...tag }) =>
+								note_id === note.id ? [...arr, tag] : arr,
+							[]
+						);
+						return { ...note, tags: noteTags };
 					});
 			}
 		});
