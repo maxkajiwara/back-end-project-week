@@ -2,20 +2,53 @@ const db = require('../config/dbConfig');
 
 module.exports = {
 	getNotes,
+	getNote,
 	addNote,
 	updateNote,
 	deleteNote,
 	addNoteTag
 };
 
-function getNotes(id) {
-	let query = db('notes');
+// Without tags
+// function getNotes(id) {
+// 	let query = db('notes');
 
-	if (id) {
-		return query.where({ id }).then(([note]) => note || undefined);
-	} else {
-		return query;
-	}
+// 	if (id) {
+// 		return query.where({ id }).then(([note]) => note || undefined);
+// 	} else {
+// 		return query;
+// 	}
+// }
+
+// This returns a note row for every tag. Might collapse it?
+// function getNotes() {
+// 	return db
+// 		.select(
+// 			'note_tags.note_id',
+// 			'notes.title',
+// 			'notes.textBody',
+// 			'note_tags.tag_id',
+// 			'tags.text'
+// 		)
+// 		.from('notes')
+// 		.innerJoin('note_tags', 'notes.id', 'note_tags.note_id')
+// 		.innerJoin('tags', 'note_tags.tag_id', 'tags.id');
+// }
+
+function getNotes() {
+	return db('notes').then(notes => {
+		return db('tags')
+			.join('note_tags', 'tags.id', 'note_tags.tag_id')
+			.select('note_tags.note_id', 'tags.id', 'tags.text')
+			.then(tags => {
+				return notes.map(note => {
+					const noteTags = tags
+						.filter(({ note_id }) => note_id === note.id)
+						.map(({ note_id, ...tag }) => tag);
+					return { ...note, tags: noteTags };
+				});
+			});
+	});
 }
 
 function addNote(note) {

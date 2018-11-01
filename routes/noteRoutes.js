@@ -20,7 +20,7 @@ router.get('/:id', (req, res) => {
 	const { id } = req.params;
 
 	noteModel
-		.getNotes(id)
+		.getNote(id)
 		.then(note => {
 			if (note) {
 				res.status(201).json(note);
