@@ -8,10 +8,10 @@ module.exports = {
 		},
 		useNullAsDefault: true,
 		migrations: {
-			directory: '../migrations',
+			directory: './migrations',
 			tableName: 'migrations'
 		},
-		seeds: { directory: '../seeds' }
+		seeds: { directory: './seeds' }
 	}
 
 	// staging: {
