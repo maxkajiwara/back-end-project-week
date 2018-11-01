@@ -6,7 +6,7 @@
 	"author": "Max <maxkajiwara@gmail.com>",
 	"license": "MIT",
 	"scripts": {
-		"start": "nodemon index.js",
+		"start": "index.js",
 		"test": "jest --watch --verbose"
 	},
 	"jest": {
