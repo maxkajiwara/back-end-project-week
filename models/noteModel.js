@@ -20,7 +20,7 @@ module.exports = {
 // 	}
 // }
 
-// This returns a note row for every tag. Might collapse it?
+// This returns a note row for every tag.
 // function getNotes() {
 // 	return db
 // 		.select(
@@ -35,20 +35,61 @@ module.exports = {
 // 		.innerJoin('tags', 'note_tags.tag_id', 'tags.id');
 // }
 
+// This works! Can compare performance of .filter().map() to .reduce().
+// function getNotes() {
+// 	return db('notes').then(notes => {
+// 		return db('tags')
+// 			.join('note_tags', 'tags.id', 'note_tags.tag_id')
+// 			.select('note_tags.note_id', 'tags.id', 'tags.text')
+// 			.then(tags => {
+// 				return notes.map(note => {
+// 					tags = tags
+// 						.filter(({ note_id }) => note_id === note.id)
+// 						.map(({ note_id, ...tag }) => tag);
+// 					return { ...note, tags };
+// 				});
+// 			});
+// 	});
+// }
+
 function getNotes() {
 	return db('notes').then(notes => {
 		return db('tags')
 			.join('note_tags', 'tags.id', 'note_tags.tag_id')
 			.select('note_tags.note_id', 'tags.id', 'tags.text')
 			.then(tags => {
-				return notes.map(note => {
-					const noteTags = tags
-						.filter(({ note_id }) => note_id === note.id)
-						.map(({ note_id, ...tag }) => tag);
-					return { ...note, tags: noteTags };
-				});
+				return notes.map(note => ({
+					...note,
+					tags: tags.reduce(
+						(arr, { note_id, ...tag }) =>
+							note_id === note.id ? [...arr, tag] : arr,
+						[]
+					)
+				}));
 			});
 	});
+}
+
+function getNote(id) {
+	return db('notes')
+		.where({ id })
+		.then(([note]) => {
+			if (!note) return undefined;
+			else {
+				return db('tags')
+					.join('note_tags', 'tags.id', 'note_tags.tag_id')
+					.select('note_tags.note_id', 'tags.id', 'tags.text')
+					.where({ note_id: id })
+					.then(tags => {
+						return notes.map(note => {
+							const noteTags = tags
+								.filter(({ note_id }) => note_id === note.id)
+								.map(({ note_id, ...tag }) => tag);
+							return { ...note, tags: noteTags };
+						});
+					});
+			}
+		});
 }
 
 function addNote(note) {
