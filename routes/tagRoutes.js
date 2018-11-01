@@ -5,7 +5,7 @@ const router = express.Router();
 // Models
 const tagModel = require('../models/tagModel');
 
-// add tag
+// create tag
 router.post('/', (req, res) => {
 	const { text } = req.body;
 
