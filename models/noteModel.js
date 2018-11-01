@@ -43,10 +43,10 @@ module.exports = {
 // 			.select('note_tags.note_id', 'tags.id', 'tags.text')
 // 			.then(tags => {
 // 				return notes.map(note => {
-// 					tags = tags
+// 					noteTags = tags
 // 						.filter(({ note_id }) => note_id === note.id)
 // 						.map(({ note_id, ...tag }) => tag);
-// 					return { ...note, tags };
+// 					return { ...note, tags: noteTags };
 // 				});
 // 			});
 // 	});
@@ -58,14 +58,14 @@ function getNotes() {
 			.join('note_tags', 'tags.id', 'note_tags.tag_id')
 			.select('note_tags.note_id', 'tags.id', 'tags.text')
 			.then(tags => {
-				return notes.map(note => ({
-					...note,
-					tags: tags.reduce(
+				return notes.map(note => {
+					noteTags = tags.reduce(
 						(arr, { note_id, ...tag }) =>
 							note_id === note.id ? [...arr, tag] : arr,
 						[]
-					)
-				}));
+					);
+					return { ...note, tags: noteTags };
+				});
 			});
 	});
 }
