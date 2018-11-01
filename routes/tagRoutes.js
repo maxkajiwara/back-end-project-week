@@ -20,7 +20,7 @@ router.post('/', (req, res) => {
 				res.status(200).json(tag_id);
 			})
 			.catch(err => {
-				if (err.code === 'SQLITE_CONSTRAINT') {
+				if (err.code === '23505' || 'SQLITE_CONSTRAINT') {
 					// Haven't figured out how to return the id from the first query
 					return tagModel.getTagByText(text).then(tag_id => {
 						res.status(200).json(tag_id);

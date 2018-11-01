@@ -112,7 +112,7 @@ router.post('/:note_id/tags', (req, res) => {
 				}
 			})
 			.catch(err => {
-				if (err.code === 'SQLITE_CONSTRAINT') {
+				if (err.code === '23505' || 'SQLITE_CONSTRAINT') {
 					res.status(409).json({ error: 'note already has this tag' });
 				} else {
 					res.status(500).json(err);
